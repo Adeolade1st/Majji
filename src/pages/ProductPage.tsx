@@ -4,9 +4,15 @@ import { mockProducts } from '../data/mockData';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface ProductPageProps {
   productId: string | null;
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const ProductPage: React.FC<ProductPageProps> = ({ productId, onNavigate }) => {

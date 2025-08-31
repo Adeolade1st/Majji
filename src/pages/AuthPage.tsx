@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { Code, Mail, Lock, User, Building, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface AuthPageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {

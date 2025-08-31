@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { User } from '../contexts/AuthContext';
 import { TrendingUp, DollarSign, Eye, Users, Plus, Edit3, BarChart3, Download, Star, MessageCircle } from 'lucide-react';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface SellerDashboardProps {
   user: User;
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const SellerDashboard: React.FC<SellerDashboardProps> = ({ user, onNavigate }) => {

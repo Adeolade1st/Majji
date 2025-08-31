@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { User } from '../contexts/AuthContext';
 import { Download, Star, Clock, CreditCard, MessageCircle, Shield, Eye } from 'lucide-react';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface BuyerDashboardProps {
   user: User;
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ user, onNavigate }) => {
@@ -286,3 +292,5 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ user, onNavigate }) => 
 };
 
 export default BuyerDashboard;
+
+export default BuyerDashboard

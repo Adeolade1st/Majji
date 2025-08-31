@@ -3,13 +3,20 @@ import { Search, Filter, Grid, List, SortAsc } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { mockProducts, categories, priceRanges } from '../data/mockData';
 
-interface BrowsePageProps {
-  onNavigate: (page: string) => void;
-  onProductSelect: (productId: string) => void;
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
 }
 
-const BrowsePage: React.FC<BrowsePageProps> = ({ onNavigate, onProductSelect }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+interface BrowsePageProps {
+  onNavigate: (options: NavigationOptions | string) => void;
+  onProductSelect: (productId: string) => void;
+  initialSearchTerm?: string;
+}
+
+const BrowsePage: React.FC<BrowsePageProps> = ({ onNavigate, onProductSelect, initialSearchTerm = '' }) => {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedPriceRange, setSelectedPriceRange] = useState('All Prices');
   const [sortBy, setSortBy] = useState('rating');

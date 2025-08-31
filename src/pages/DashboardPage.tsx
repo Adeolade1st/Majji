@@ -3,8 +3,14 @@ import { useAuth } from '../contexts/AuthContext';
 import SellerDashboard from '../components/SellerDashboard';
 import BuyerDashboard from '../components/BuyerDashboard';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface DashboardPageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {

@@ -3,14 +3,23 @@ import { ArrowRight, Zap, Shield, Users, TrendingUp, Star, Download, Search, Cod
 import ProductCard from '../components/ProductCard';
 import { mockProducts } from '../data/mockData';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface HomePageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
   onProductSelect: (productId: string) => void;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
   const featuredProducts = mockProducts.filter(p => p.featured).slice(0, 10);
   const topRatedProducts = mockProducts.sort((a, b) => b.rating - a.rating).slice(0, 3);
+  
+  // Hero search state
+  const [heroSearchTerm, setHeroSearchTerm] = useState('');
   
   // Carousel functionality
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -65,6 +74,15 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
   const handleMouseEnter = () => setIsAutoScrolling(false);
   const handleMouseLeave = () => setIsAutoScrolling(true);
 
+  const handleHeroSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && heroSearchTerm.trim()) {
+      onNavigate({
+        page: 'browse',
+        searchTerm: heroSearchTerm.trim()
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -85,6 +103,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
+                  value={heroSearchTerm}
+                  onChange={(e) => setHeroSearchTerm(e.target.value)}
+                  onKeyDown={handleHeroSearch}
                   placeholder="Search apps..."
                   className="hero-search w-full pl-12 pr-4 py-5 text-xl border-2 border-white/20 rounded-xl focus:ring-2 focus:ring-white focus:border-white transition-all duration-300"
                 />

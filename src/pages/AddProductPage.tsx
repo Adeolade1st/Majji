@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Upload, DollarSign, Tag, Globe, FileText, Image, Save, X, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
+interface NavigationOptions {
+  page: string;
+  productId?: string;
+  searchTerm?: string;
+}
+
 interface AddProductPageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (options: NavigationOptions | string) => void;
 }
 
 const AddProductPage: React.FC<AddProductPageProps> = ({ onNavigate }) => {
