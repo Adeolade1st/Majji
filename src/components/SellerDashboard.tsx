@@ -129,7 +129,6 @@ const SellerDashboard: React.FC<SellerDashboardProps> = ({ user, onNavigate }) =
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">My Products</h3>
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2 btn-animate">
             <button 
               onClick={() => onNavigate('add-product')}
               className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2 btn-animate"
