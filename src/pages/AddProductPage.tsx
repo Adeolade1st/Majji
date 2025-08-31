@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Upload, DollarSign, Tag, Globe, FileText, Image, Save, X } from 'lucide-react';
+import { ArrowLeft, Upload, DollarSign, Tag, Globe, FileText, Image, Save, X, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 interface AddProductPageProps {
   onNavigate: (page: string) => void;
 }
 
 const AddProductPage: React.FC<AddProductPageProps> = ({ onNavigate }) => {
+  // File upload constants
+  const MAX_FILE_SIZE_MB = 10;
+  const MAX_FILES = 10;
+  const ALLOWED_FILE_TYPES = [
+    'image/jpeg', 'image/jpg', 'image/png', 'image/gif',
+    'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
+
+  // File input reference
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -21,7 +33,13 @@ const AddProductPage: React.FC<AddProductPageProps> = ({ onNavigate }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<Array<{url: string, name: string}>>([]);
+
+  // File upload state
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [fileUploadErrors, setFileUploadErrors] = useState<string[]>([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false);
 
   const categories = [
     'Web Application',
@@ -34,6 +52,127 @@ const AddProductPage: React.FC<AddProductPageProps> = ({ onNavigate }) => {
   ];
 
   const licenseOptions = ['Standard', 'Extended', 'Enterprise', 'White Label'];
+
+  // File handling functions
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setFileUploadErrors([]);
+    setUploadProgress(0);
+
+    // Validate number of files
+    if (files.length > MAX_FILES) {
+      setFileUploadErrors([`Maximum ${MAX_FILES} files allowed`]);
+      return;
+    }
+
+    const validFiles: File[] = [];
+    const errors: string[] = [];
+
+    files.forEach((file) => {
+      // Validate file type
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        errors.push(`${file.name}: Unsupported file type`);
+        return;
+      }
+
+      // Validate file size
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        errors.push(`${file.name}: File size exceeds ${MAX_FILE_SIZE_MB}MB limit`);
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    setSelectedFiles(validFiles);
+    setFileUploadErrors(errors);
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const handleUploadFiles = async () => {
+    if (selectedFiles.length === 0) return;
+
+    setIsUploadingFiles(true);
+    setUploadProgress(0);
+    setFileUploadErrors([]);
+
+    try {
+      // Simulate file upload with progress
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        
+        // Simulate upload progress
+        const progressIncrement = 100 / selectedFiles.length;
+        const startProgress = i * progressIncrement;
+        
+        // Simulate upload with XMLHttpRequest for progress tracking
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          
+          xhr.upload.addEventListener('progress', (event) => {
+            if (event.lengthComputable) {
+              const fileProgress = (event.loaded / event.total) * progressIncrement;
+              setUploadProgress(startProgress + fileProgress);
+            }
+          });
+
+          xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+              // Simulate successful upload - add to uploaded images
+              const imageUrl = URL.createObjectURL(file);
+              setUploadedImages(prev => [...prev, { url: imageUrl, name: file.name }]);
+              resolve();
+            } else {
+              reject(new Error(`Upload failed for ${file.name}`));
+            }
+          });
+
+          xhr.addEventListener('error', () => {
+            reject(new Error(`Network error uploading ${file.name}`));
+          });
+
+          // Simulate upload delay
+          setTimeout(() => {
+            xhr.dispatchEvent(new Event('load'));
+          }, 1000 + Math.random() * 1000);
+
+          // Create mock request
+          const formData = new FormData();
+          formData.append('file', file);
+          xhr.open('POST', '/api/upload'); // Mock endpoint
+        });
+      }
+
+      // Upload complete
+      setUploadProgress(100);
+      setSelectedFiles([]);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+
+    } catch (error) {
+      setFileUploadErrors([error instanceof Error ? error.message : 'Upload failed']);
+    } finally {
+      setIsUploadingFiles(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -305,17 +444,174 @@ const AddProductPage: React.FC<AddProductPageProps> = ({ onNavigate }) => {
                 <label className="block text-sm font-medium text-text-darkest mb-2">
                   Product Images
                 </label>
-                <div className="border-2 border-dashed border-border-medium rounded-lg p-8 text-center hover:border-primary-action transition-colors">
+                
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  aria-label="Choose files to upload"
+                />
+                
+                <div 
+                  className="border-2 border-dashed border-border-medium rounded-lg p-8 text-center hover:border-primary-action transition-colors cursor-pointer"
+                  onClick={triggerFileInput}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      triggerFileInput();
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label="Click to choose files for upload"
+                >
                   <Image className="h-12 w-12 text-text-medium mx-auto mb-4" />
                   <p className="text-text-dark mb-2">Upload product screenshots or images</p>
-                  <p className="text-text-medium text-sm mb-4">PNG, JPG up to 10MB each</p>
+                  <p className="text-text-medium text-sm mb-4">
+                    Images (JPG, PNG, GIF), Documents (PDF, DOC, DOCX), Spreadsheets (XLS, XLSX)
+                  </p>
+                  <p className="text-text-medium text-sm mb-4">Up to {MAX_FILES} files, {MAX_FILE_SIZE_MB}MB each</p>
                   <button
                     type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerFileInput();
+                    }}
                     className="bg-primary-action text-text-light px-4 py-2 rounded-lg hover:bg-primary-action-dark transition-colors btn-animate"
                   >
                     Choose Files
                   </button>
                 </div>
+
+                {/* File Upload Errors */}
+                {fileUploadErrors.length > 0 && (
+                  <div className="mt-4 p-4 bg-error-50 border border-error-100 rounded-lg">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <AlertCircle className="h-4 w-4 text-error" />
+                      <span className="text-sm font-medium text-error">Upload Errors</span>
+                    </div>
+                    <ul className="text-sm text-error space-y-1">
+                      {fileUploadErrors.map((error, index) => (
+                        <li key={index}>• {error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Selected Files Display */}
+                {selectedFiles.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-text-darkest">Selected Files ({selectedFiles.length})</h4>
+                      <button
+                        type="button"
+                        onClick={handleUploadFiles}
+                        disabled={isUploadingFiles || fileUploadErrors.length > 0}
+                        className="bg-success text-text-light px-4 py-2 rounded-lg hover:bg-success-dark transition-colors btn-animate disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                      >
+                        {isUploadingFiles ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4" />
+                            <span>Upload Files</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* File List */}
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {selectedFiles.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-bg-light border border-border-light rounded-lg">
+                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                            <div className="flex-shrink-0">
+                              {file.type.startsWith('image/') ? (
+                                <Image className="h-5 w-5 text-primary-action" />
+                              ) : (
+                                <FileText className="h-5 w-5 text-text-medium" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-text-darkest truncate">{file.name}</p>
+                              <p className="text-xs text-text-medium">{formatFileSize(file.size)}</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFile(index)}
+                            disabled={isUploadingFiles}
+                            className="p-1 text-text-medium hover:text-error transition-colors disabled:opacity-50"
+                            aria-label={`Remove ${file.name}`}
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Upload Progress */}
+                    {isUploadingFiles && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-text-dark">Uploading files...</span>
+                          <span className="text-text-dark">{Math.round(uploadProgress)}%</span>
+                        </div>
+                        <div className="w-full bg-border-light rounded-full h-2">
+                          <div 
+                            className="bg-primary-action h-2 rounded-full transition-all duration-300 ease-out"
+                            style={{ width: `${uploadProgress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Uploaded Images Display */}
+                {uploadedImages.length > 0 && (
+                  <div className="mt-4">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <h4 className="text-sm font-medium text-text-darkest">Uploaded Files ({uploadedImages.length})</h4>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {uploadedImages.map((image, index) => (
+                        <div key={index} className="relative group">
+                          <div className="aspect-square bg-bg-light border border-border-light rounded-lg overflow-hidden">
+                            {image.name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                              <img 
+                                src={image.url} 
+                                alt={image.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <FileText className="h-8 w-8 text-text-medium" />
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs text-text-medium mt-1 truncate">{image.name}</p>
+                          <button
+                            type="button"
+                            onClick={() => setUploadedImages(prev => prev.filter((_, i) => i !== index))}
+                            className="absolute -top-2 -right-2 bg-error text-text-light rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            aria-label={`Remove ${image.name}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
