@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Zap, Shield, Users, TrendingUp, Star, Download, Search, Code } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { mockProducts } from '../data/mockData';
