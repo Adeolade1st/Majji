@@ -12,10 +12,30 @@ import './App.css';
 
 type Page = 'home' | 'browse' | 'product' | 'dashboard' | 'auth' | 'add-product';
 
+interface NavigationOptions {
+  page: Page;
+  productId?: string;
+  searchTerm?: string;
+}
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const { user } = useAuth();
+
+  const handleNavigate = (options: NavigationOptions | Page) => {
+    if (typeof options === 'string') {
+      // Legacy string navigation
+      setCurrentPage(options);
+      setSelectedProductId(null);
+      setCurrentSearchTerm('');
+    } else {
+      // New object navigation
+      setCurrentPage(options.page);
+      setSelectedProductId(options.productId || null);
+      setCurrentSearchTerm(options.searchTerm || '');
+    }
+  };
 
   const navigateToProduct = (productId: string) => {
     setSelectedProductId(productId);
@@ -25,25 +45,25 @@ function AppContent() {
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return <HomePage onNavigate={setCurrentPage} onProductSelect={navigateToProduct} />;
+        return <HomePage onNavigate={handleNavigate} onProductSelect={navigateToProduct} />;
       case 'browse':
-        return <BrowsePage onNavigate={setCurrentPage} onProductSelect={navigateToProduct} />;
+        return <BrowsePage onNavigate={handleNavigate} onProductSelect={navigateToProduct} initialSearchTerm={currentSearchTerm} />;
       case 'product':
-        return <ProductPage productId={selectedProductId} onNavigate={setCurrentPage} />;
+        return <ProductPage productId={selectedProductId} onNavigate={handleNavigate} />;
       case 'dashboard':
-        return user ? <DashboardPage onNavigate={setCurrentPage} /> : <AuthPage onNavigate={setCurrentPage} />;
+        return user ? <DashboardPage onNavigate={handleNavigate} /> : <AuthPage onNavigate={handleNavigate} />;
       case 'auth':
-        return <AuthPage onNavigate={setCurrentPage} />;
+        return <AuthPage onNavigate={handleNavigate} />;
       case 'add-product':
-        return user ? <AddProductPage onNavigate={setCurrentPage} /> : <AuthPage onNavigate={setCurrentPage} />;
+        return user ? <AddProductPage onNavigate={handleNavigate} /> : <AuthPage onNavigate={handleNavigate} />;
       default:
-        return <HomePage onNavigate={setCurrentPage} onProductSelect={navigateToProduct} />;
+        return <HomePage onNavigate={handleNavigate} onProductSelect={navigateToProduct} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+      <Header currentPage={currentPage} onNavigate={handleNavigate} />
       {renderPage()}
     </div>
   );
