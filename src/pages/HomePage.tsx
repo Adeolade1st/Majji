@@ -24,7 +24,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
               </h1>
               
               <h4 className="text-xl md:text-2xl text-white/90 mb-12 font-medium">
-                Sell those amazing solutions so that businesses can thrive better
+                Solutions built by the brightest for your business.
               </h4>
               
               {/* Search Bar */}

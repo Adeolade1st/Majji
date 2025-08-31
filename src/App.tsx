@@ -5,11 +5,12 @@ import BrowsePage from './pages/BrowsePage';
 import ProductPage from './pages/ProductPage';
 import DashboardPage from './pages/DashboardPage';
 import AuthPage from './pages/AuthPage';
+import AddProductPage from './pages/AddProductPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import './App.css';
 
-type Page = 'home' | 'browse' | 'product' | 'dashboard' | 'auth';
+type Page = 'home' | 'browse' | 'product' | 'dashboard' | 'auth' | 'add-product';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -33,6 +34,8 @@ function AppContent() {
         return user ? <DashboardPage onNavigate={setCurrentPage} /> : <AuthPage onNavigate={setCurrentPage} />;
       case 'auth':
         return <AuthPage onNavigate={setCurrentPage} />;
+      case 'add-product':
+        return user ? <AddProductPage onNavigate={setCurrentPage} /> : <AuthPage onNavigate={setCurrentPage} />;
       default:
         return <HomePage onNavigate={setCurrentPage} onProductSelect={navigateToProduct} />;
     }
