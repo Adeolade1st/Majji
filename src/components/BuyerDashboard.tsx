@@ -292,5 +292,3 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ user, onNavigate }) => 
 };
 
 export default BuyerDashboard;
-
-export default BuyerDashboard
