@@ -110,6 +110,82 @@ export const mockProducts: Product[] = [
     tags: ['Flutter', 'Dart', 'Fitness', 'Mobile'],
     licenseTypes: ['Standard', 'Extended', 'White Label'],
     featured: true
+  },
+  {
+    id: '7',
+    name: 'Next.js E-commerce Template',
+    description: 'Complete e-commerce solution with payment integration, inventory management, and admin panel',
+    price: 399,
+    image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'Web Application',
+    rating: 4.8,
+    reviews: 142,
+    downloads: 1650,
+    seller: {
+      name: 'Lisa Chen',
+      verified: true,
+      rating: 4.9
+    },
+    tags: ['Next.js', 'E-commerce', 'Stripe', 'TypeScript'],
+    licenseTypes: ['Standard', 'Extended', 'Enterprise'],
+    featured: true
+  },
+  {
+    id: '8',
+    name: 'Angular Admin Dashboard',
+    description: 'Professional admin dashboard with advanced data visualization and user management features',
+    price: 279,
+    image: 'https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'Web Application',
+    rating: 4.7,
+    reviews: 98,
+    downloads: 1320,
+    seller: {
+      name: 'Robert Martinez',
+      verified: true,
+      rating: 4.8
+    },
+    tags: ['Angular', 'Dashboard', 'Charts', 'Material UI'],
+    licenseTypes: ['Standard', 'Extended'],
+    featured: true
+  },
+  {
+    id: '9',
+    name: 'Shopify Theme Builder',
+    description: 'Drag-and-drop theme builder for Shopify stores with 20+ pre-designed templates',
+    price: 189,
+    image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'Web Application',
+    rating: 4.6,
+    reviews: 167,
+    downloads: 2890,
+    seller: {
+      name: 'Sophie Williams',
+      verified: true,
+      rating: 4.7
+    },
+    tags: ['Shopify', 'E-commerce', 'Liquid', 'Responsive'],
+    licenseTypes: ['Standard', 'Developer'],
+    featured: true
+  },
+  {
+    id: '10',
+    name: 'React Native Chat App',
+    description: 'Real-time messaging app with voice calls, file sharing, and group chat functionality',
+    price: 329,
+    image: 'https://images.pexels.com/photos/147413/twitter-facebook-together-exchange-of-information-147413.jpeg?auto=compress&cs=tinysrgb&w=500',
+    category: 'Mobile App',
+    rating: 4.9,
+    reviews: 203,
+    downloads: 1540,
+    seller: {
+      name: 'Michael Brown',
+      verified: true,
+      rating: 4.9
+    },
+    tags: ['React Native', 'Chat', 'Real-time', 'WebRTC'],
+    licenseTypes: ['Standard', 'Extended', 'White Label'],
+    featured: true
   }
 ];
 

@@ -9,8 +9,61 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
-  const featuredProducts = mockProducts.filter(p => p.featured);
+  const featuredProducts = mockProducts.filter(p => p.featured).slice(0, 10);
   const topRatedProducts = mockProducts.sort((a, b) => b.rating - a.rating).slice(0, 3);
+  
+  // Carousel functionality
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const cardWidth = 320; // Width of each card including gap
+  const visibleCards = 3; // Number of cards visible at once on desktop
+  
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      const newIndex = Math.max(0, currentIndex - 1);
+      setCurrentIndex(newIndex);
+      scrollRef.current.scrollTo({
+        left: newIndex * cardWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      const maxIndex = Math.max(0, featuredProducts.length - visibleCards);
+      const newIndex = Math.min(maxIndex, currentIndex + 1);
+      setCurrentIndex(newIndex);
+      scrollRef.current.scrollTo({
+        left: newIndex * cardWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!isAutoScrolling) return;
+    
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const maxIndex = Math.max(0, featuredProducts.length - visibleCards);
+        const nextIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
+        setCurrentIndex(nextIndex);
+        scrollRef.current.scrollTo({
+          left: nextIndex * cardWidth,
+          behavior: 'smooth'
+        });
+      }
+    }, 4000); // Auto-scroll every 4 seconds
+    
+    return () => clearInterval(interval);
+  }, [currentIndex, isAutoScrolling, featuredProducts.length, visibleCards, cardWidth]);
+  
+  const handleMouseEnter = () => setIsAutoScrolling(false);
+  const handleMouseLeave = () => setIsAutoScrolling(true);
 
   return (
     <div className="min-h-screen">
@@ -159,14 +212,74 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
             </button>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                onSelect={onProductSelect}
-              />
-            ))}
+          {/* Carousel Container */}
+          <div className="relative">
+            {/* Navigation Arrows */}
+            <button
+              onClick={scrollLeft}
+              disabled={currentIndex === 0}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Previous products"
+            >
+              <ChevronLeft className="h-5 w-5 text-gray-700" />
+            </button>
+            
+            <button
+              onClick={scrollRight}
+              disabled={currentIndex >= Math.max(0, featuredProducts.length - visibleCards)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Next products"
+            >
+              <ChevronRight className="h-5 w-5 text-gray-700" />
+            </button>
+            
+            {/* Scrollable Container */}
+            <div
+              ref={scrollRef}
+              className="flex overflow-x-auto scrollbar-hide gap-6 pb-4 scroll-smooth"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              role="region"
+              aria-label="Featured products carousel"
+            >
+              {featuredProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="flex-shrink-0 w-80 transform transition-transform duration-300 hover:scale-105"
+                  style={{ minWidth: '320px' }}
+                >
+                  <ProductCard 
+                    product={product} 
+                    onSelect={onProductSelect}
+                  />
+                </div>
+              ))}
+            </div>
+            
+            {/* Dot Indicators */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {Array.from({ length: Math.ceil(featuredProducts.length / visibleCards) }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    if (scrollRef.current) {
+                      scrollRef.current.scrollTo({
+                        left: index * cardWidth,
+                        behavior: 'smooth'
+                      });
+                    }
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    Math.floor(currentIndex / visibleCards) === index
+                      ? 'bg-indigo-600 scale-110'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>

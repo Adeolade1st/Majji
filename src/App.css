@@ -157,3 +157,13 @@ select:focus {
   backdrop-filter: blur(4px);
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
