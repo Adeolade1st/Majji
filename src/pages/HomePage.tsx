@@ -94,7 +94,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
               <TypewriterEffect
                 text="Digital Solutions built by the brightest for your businesses."
                 delay={50}
-                infinite={true}
+                infinite={False}
                 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white"
               />
               <h1 className="text-xl md:text-2xl text-white/90 mb-12 font-medium">
