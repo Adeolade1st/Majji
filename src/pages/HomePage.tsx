@@ -92,9 +92,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="fade-in-up">
               <TypewriterEffect
-                text="Change Styling Solutions built by the brightest for your business. Africa's first and biggest digital marketplace."
+                text="Digital Solutions built by the brightest for your businesses.
                 delay={50}
-                infinite={true}
+                infinite={False}
                 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white"
               />
               <h1 className="text-xl md:text-2xl text-white/90 mb-12 font-medium">
