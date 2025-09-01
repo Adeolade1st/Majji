@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <img 
                 src="/Majji-removebg-preview.png" 
                 alt="Majji Logo" 
-                className="h-30 w-50"
+                className="h-30 w-20"
               />
             </div>
 
