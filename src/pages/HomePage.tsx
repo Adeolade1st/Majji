@@ -91,10 +91,10 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
           <div className="text-center max-w-4xl mx-auto">
             <div className="fade-in-up">
               <h4 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white">
-                Value exchange happens here!
+                Digital solutions built by the brightest for your businesses.
               </h4>
               <h1 className="text-xl md:text-2xl text-white/90 mb-12 font-medium">
-               Digital solutions built by the brightest for your business.Africa's first and biggest digital marketplace.
+               We're Africa's first and biggest digital marketplace.
               </h1>
               
               
