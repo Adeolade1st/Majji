@@ -33,10 +33,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               className="flex items-center space-x-2 cursor-pointer"
               onClick={() => onNavigate('home')}
             >
-              <div className="bg-indigo-600 p-2 rounded-lg">
-                <Code className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900">Majji</span>
+              <img 
+                src="/Majji-removebg-preview.png" 
+                alt="Majji Logo" 
+                className="h-10 w-auto"
+              />
             </div>
 
             {/* Desktop Navigation */}
