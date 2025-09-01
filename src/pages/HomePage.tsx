@@ -94,7 +94,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
                 Value exchange happens here!
               </h4>
               <h1 className="text-xl md:text-2xl text-white/90 mb-12 font-medium">
-               Digital solutions built by the brightest for your business.<br/>> Africa's first and biggest digital marketplace.
+               Digital solutions built by the brightest for your business.<br>Africa's first and biggest digital marketplace.<br/>
               </h1>
               
               
