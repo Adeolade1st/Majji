@@ -104,7 +104,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
               
               
               {/* Search Bar */}
-              <div className="relative max-w-2xl mx-auto">
+              <div className="relative max-w-2xl mx-auto mt-16">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
