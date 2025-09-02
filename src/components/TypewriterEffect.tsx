@@ -44,7 +44,9 @@ const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
   return (
     <h4 className={className}>
       {currentText}
-      <span className="typewriter-cursor">|</span>
+      {(infinite || currentIndex < text.length || isDeleting) && (
+        <span className="typewriter-cursor">|</span>
+      )}
     </h4>
   );
 };
