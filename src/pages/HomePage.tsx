@@ -330,30 +330,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, onProductSelect }) => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">25K+</div>
-              <div className="text-gray-600">Products Available</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">8K+</div>
-              <div className="text-gray-600">Verified Developers</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">150K+</div>
-              <div className="text-gray-600">Happy Customers</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-indigo-600 mb-2">$2M+</div>
-              <div className="text-gray-600">Developer Earnings</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
