@@ -27,7 +27,6 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Account       Account[]
-  Session       Session[]
 
   @@index([id, email])
 }
