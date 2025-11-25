@@ -104,25 +104,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email,
         password,
         name,
+        type,
+        company: company || '',
+        needsOnboarding: true,
       });
 
       if (result.error) {
         throw new Error(result.error.message || 'Registration failed');
-      }
-
-      // After successful registration, update the user profile
-      if (result.data?.user) {
-        await fetch('/api/auth/update-profile', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            type,
-            company,
-            needsOnboarding: true,
-          }),
-        });
       }
     } catch (error) {
       setIsLoading(false);
