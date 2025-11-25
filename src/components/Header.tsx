@@ -66,12 +66,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 <button
                   onClick={() => onNavigate('dashboard')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    currentPage === 'dashboard' 
+                    currentPage === 'dashboard' || currentPage === 'onboarding'
                       ? 'text-indigo-600 bg-indigo-50' 
                       : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
                   }`}
                 >
-                  Dashboard
+                  {user.needsOnboarding ? 'Complete Setup' : 'Dashboard'}
                 </button>
               )}
             </nav>
@@ -182,12 +182,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     setIsMenuOpen(false);
                   }}
                   className={`block px-3 py-2 rounded-md text-base font-medium w-full text-left transition-colors ${
-                    currentPage === 'dashboard' 
+                    currentPage === 'dashboard' || currentPage === 'onboarding'
                       ? 'text-indigo-600 bg-indigo-50' 
                       : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
                   }`}
                 >
-                  Dashboard
+                  {user.needsOnboarding ? 'Complete Setup' : 'Dashboard'}
                 </button>
               )}
             </div>

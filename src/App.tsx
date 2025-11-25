@@ -5,12 +5,13 @@ import BrowsePage from './pages/BrowsePage';
 import ProductPage from './pages/ProductPage';
 import DashboardPage from './pages/DashboardPage';
 import AuthPage from './pages/AuthPage';
+import OnboardingPage from './pages/OnboardingPage';
 import AddProductPage from './pages/AddProductPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import './App.css';
 
-type Page = 'home' | 'browse' | 'product' | 'dashboard' | 'auth' | 'add-product';
+type Page = 'home' | 'browse' | 'product' | 'dashboard' | 'auth' | 'onboarding' | 'add-product';
 
 interface NavigationOptions {
   page: Page;
@@ -22,6 +23,13 @@ function AppContent() {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
   const { user } = useAuth();
+
+  // Handle automatic navigation for users needing onboarding
+  React.useEffect(() => {
+    if (user?.needsOnboarding && currentPage !== 'onboarding') {
+      setCurrentPage('onboarding');
+    }
+  }, [user, currentPage]);
 
   const handleNavigate = (options: NavigationOptions | Page) => {
     if (typeof options === 'string') {
@@ -54,6 +62,8 @@ function AppContent() {
         return user ? <DashboardPage onNavigate={handleNavigate} /> : <AuthPage onNavigate={handleNavigate} />;
       case 'auth':
         return <AuthPage onNavigate={handleNavigate} />;
+      case 'onboarding':
+        return <OnboardingPage onNavigate={handleNavigate} />;
       case 'add-product':
         return user ? <AddProductPage onNavigate={handleNavigate} /> : <AuthPage onNavigate={handleNavigate} />;
       default:
