@@ -14,7 +14,6 @@ export const auth = betterAuth({
         google: { 
             clientId: process.env.GOOGLE_CLIENT_ID as string, 
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
-            redirectURI: `${process.env.BETTER_AUTH_URL || 'http://localhost:5173'}/api/auth/callback/google`,
         },
     },
     baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:5173',
@@ -28,22 +27,19 @@ export const auth = betterAuth({
                 type: "string",
                 required: true,
             },
-            type: {
-                type: "string",
-                required: true,
-            },
             company: {
                 type: "string", 
                 required: false,
+                defaultValue: "buyer",
             },
             verified: {
                 type: "boolean",
                 required: true,
-                defaultValue: trye,
+                defaultValue: false,
             },
             needsOnboarding: {
                 type: "boolean",
-                required: true,
+                required: false,
                 defaultValue: true,
             },
         },
