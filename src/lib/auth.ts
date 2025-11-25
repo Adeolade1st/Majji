@@ -38,12 +38,12 @@ export const auth = betterAuth({
             },
             verified: {
                 type: "boolean",
-                required: false,
-                defaultValue: false,
+                required: true,
+                defaultValue: trye,
             },
             needsOnboarding: {
                 type: "boolean",
-                required: false,
+                required: true,
                 defaultValue: true,
             },
         },
