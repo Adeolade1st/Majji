@@ -26,11 +26,11 @@ export const auth = betterAuth({
         additionalFields: {
             name: {
                 type: "string",
-                required: false,
+                required: true,
             },
             type: {
                 type: "string",
-                required: false,
+                required: true,
             },
             company: {
                 type: "string", 
