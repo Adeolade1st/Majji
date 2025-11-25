@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useSession, signIn as authSignIn, signUp as authSignUp, signOut as authSignOut } from '../lib/auth-client';
+import { useSession, signIn as authSignIn, signUp as authSignUp, signOut as authSignOut, updateUser } from '../lib/auth-client';
 
 export interface User {
   id: string;
@@ -124,32 +124,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      // Update user profile via API call to better-auth
-      const response = await fetch('/api/auth/update-profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          needsOnboarding: false,
-        }),
+      // Update user profile using better-auth's updateUser function
+      const result = await updateUser({
+        name: data.name,
+        type: data.type,
+        company: data.company || '',
+        needsOnboarding: false,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to update profile');
+      if (result.error) {
+        throw new Error(result.error.message || 'Failed to update profile');
       }
-      
-      if (user) {
-        const updatedUser: User = {
-          ...user,
-          name: data.name,
-          type: data.type,
-          company: data.company,
-          needsOnboarding: false
-        };
-        setUser(updatedUser);
-      }
+
+      // The useSession hook will automatically update with the new user data
     } catch (error) {
       throw error;
     } finally {

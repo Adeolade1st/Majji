@@ -22,18 +22,17 @@ export const auth = betterAuth({
         updateAge: 60 * 60 * 24, // 1 day
     },
     user: {
-                type: {
+        additionalFields: {
+            type: {
+                type: "string",
+                required: true,
+            },
             company: {
-                    required: true,
-                },
-                company: {
-                    type: "string", 
-                    required: false,
-                defaultValue: "buyer",
+                type: "string",
+                required: false,
             },
             verified: {
                 type: "boolean",
-                    defaultValue: false,
                 defaultValue: false,
             },
             needsOnboarding: {
