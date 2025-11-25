@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Code, Mail, Lock, User, Building, Loader2 } from 'lucide-react';
+import { Code, Mail, Lock, User, Building, Loader2, Chrome } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavigationOptions {
@@ -23,7 +23,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
   });
   const [error, setError] = useState('');
 
-  const { login, register, isLoading } = useAuth();
+  const { login, loginWithGoogle, register, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,16 +31,26 @@ const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
 
     try {
       if (isLogin) {
-        await login(formData.email, formData.password, userType);
+        await login(formData.email, formData.password);
+        onNavigate('dashboard');
       } else {
         await register(formData.email, formData.password, formData.name, userType, formData.company);
+        onNavigate('onboarding');
       }
-      onNavigate('dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setError('');
+    try {
+      await loginWithGoogle();
+      // Navigation will be handled by the auth context based on user state
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google login failed');
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -181,6 +191,29 @@ const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
               <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
             </button>
           </form>
+
+          {/* Google Sign In */}
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+                className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Chrome className="h-5 w-5 mr-3 text-blue-500" />
+                <span>Continue with Google</span>
+              </button>
+            </div>
+          </div>
 
           {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
