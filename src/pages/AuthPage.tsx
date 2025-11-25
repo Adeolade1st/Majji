@@ -66,14 +66,16 @@ const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
 
   const handleGoogleLogin = async () => {
     setError('');
+    try {
       const result = await authSignIn.social({
+      });
       
       if (result.error) {
         throw new Error(result.error.message || 'Google authentication failed');
       }
       // Navigation will be handled by the auth context based on user state
     } catch (err) {
-      setError(error instanceof Error ? error.message : 'Google authentication failed');
+      setError(err instanceof Error ? err.message : 'Google authentication failed');
     }
   };
   return (
