@@ -24,6 +24,10 @@ model User {
   phone         String?
   emailVerified DateTime?
   isAdmin       Boolean   @default(false)
+  type          String?   // 'seller' or 'buyer'
+  company       String?
+  verified      Boolean   @default(false)
+  needsOnboarding Boolean @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   Account       Account[]

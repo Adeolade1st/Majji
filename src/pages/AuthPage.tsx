@@ -216,12 +216,12 @@ const AuthPage: React.FC<AuthPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-2">Demo credentials:</p>
-            <div className="text-xs space-y-1">
-              <div>Seller: sarah.dev@email.com</div>
-              <div>Buyer: buyer@company.com</div>
-              <div>Password: any password</div>
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-xs text-blue-800 mb-2">✨ Real authentication is now active!</p>
+            <div className="text-xs text-blue-700">
+              <div>• Create a real account with your email</div>
+              <div>• Or sign in with Google for instant access</div>
+              <div>• All data is securely stored and encrypted</div>
             </div>
           </div>
 
