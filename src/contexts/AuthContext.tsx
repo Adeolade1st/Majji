@@ -84,17 +84,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      const result = await authSignIn.social({
+      await authSignIn.social({
         provider: 'google',
-        callbackURL: window.location.origin + '/dashboard'
+        callbackURL: `${window.location.origin}/dashboard`
       });
-
-      if (result.error) {
-        throw new Error(result.error.message || 'Google login failed');
-      }
     } catch (error) {
       setIsLoading(false);
-      throw error;
+      throw new Error('Google authentication failed. Please check your configuration.');
     }
     
     setIsLoading(false);
