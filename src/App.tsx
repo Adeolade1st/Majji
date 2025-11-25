@@ -18,6 +18,17 @@ interface NavigationOptions {
   productId?: string;
   searchTerm?: string;
 }
+
+function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -76,16 +87,6 @@ function AppContent() {
       <Header currentPage={currentPage} onNavigate={handleNavigate} />
       {renderPage()}
     </div>
-  );
-}
-
-function App() {
-  return (
-    <AuthProvider>
-      <CartProvider>
-        <AppContent />
-      </CartProvider>
-    </AuthProvider>
   );
 }
 
