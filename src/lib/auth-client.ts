@@ -1,5 +1,6 @@
-import { createAuthClient } from "better-auth/react"
+import { createAuthClient } from "better-auth/react";
 
 export const { signIn, signUp, signOut, useSession } = createAuthClient({
-    baseURL: "http://localhost:3000"
+    baseURL: import.meta.env.VITE_AUTH_URL || "http://localhost:5173",
+    plugins: [],
 });

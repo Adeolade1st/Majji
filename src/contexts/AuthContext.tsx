@@ -35,28 +35,6 @@ export const useAuth = () => {
   return context;
 };
 
-// Mock users for demo (in real app, this would come from your backend)
-const mockUsers: User[] = [
-  {
-    id: '1',
-    email: 'sarah.dev@email.com',
-    name: 'Sarah Johnson',
-    type: 'seller',
-    verified: true,
-    rating: 4.8,
-    totalSales: 127,
-    joinedDate: '2023-01-15'
-  },
-  {
-    id: '2',
-    email: 'buyer@company.com',
-    name: 'Mike Chen',
-    type: 'buyer',
-    company: 'TechCorp Inc.',
-    verified: true,
-    joinedDate: '2023-06-20'
-  }
-];
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -66,22 +44,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Sync session with user state
   useEffect(() => {
     if (session?.user) {
-      // Check if this is a returning user or needs onboarding
-      const existingUser = mockUsers.find(u => u.email === session.user.email);
-      
-      if (existingUser) {
-        setUser(existingUser);
-      } else {
-        // New user from Google OAuth - needs onboarding
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.name || '',
-          verified: session.user.emailVerified || false,
-          joinedDate: new Date().toISOString().split('T')[0],
-          needsOnboarding: true
-        });
-      }
+      // Map session user to our User interface
+      setUser({
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name || '',
+        type: session.user.type as 'seller' | 'buyer' | undefined,
+        company: session.user.company,
+        verified: session.user.verified || session.user.emailVerified || false,
+        joinedDate: session.user.createdAt ? new Date(session.user.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        needsOnboarding: session.user.needsOnboarding ?? true
+      });
     } else {
       setUser(null);
     }
@@ -91,15 +64,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      // For demo purposes, check mock users first
-      const foundUser = mockUsers.find(u => u.email === email);
-      if (foundUser) {
-        setUser(foundUser);
-        setIsLoading(false);
-        return;
-      }
-
-      // Use better-auth for actual authentication
       const result = await authSignIn.email({
         email,
         password,
@@ -122,7 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const result = await authSignIn.social({
         provider: 'google',
-        callbackURL: '/dashboard'
+        callbackURL: window.location.origin + '/dashboard'
       });
 
       if (result.error) {
@@ -144,23 +108,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email,
         password,
         name,
+        type,
+        company,
+        needsOnboarding: true,
       });
 
       if (result.error) {
         throw new Error(result.error.message || 'Registration failed');
       }
-
-      // Set user with onboarding needed
-      setUser({
-        id: Date.now().toString(),
-        email,
-        name,
-        type,
-        company,
-        verified: false,
-        joinedDate: new Date().toISOString().split('T')[0],
-        needsOnboarding: true
-      });
     } catch (error) {
       setIsLoading(false);
       throw error;
@@ -173,8 +128,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     
     try {
-      // Simulate API call to update user profile
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Update user profile via API call to better-auth
+      const response = await fetch('/api/auth/update-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          needsOnboarding: false,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
       
       if (user) {
         const updatedUser: User = {
