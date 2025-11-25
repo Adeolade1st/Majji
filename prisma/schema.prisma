@@ -18,12 +18,12 @@ model User {
   email         String    @unique
   username      String?   @unique
   image         String?
-  name          String?
+  name          String
   password      String?
   phone         String?
   emailVerified DateTime?
   isAdmin       Boolean   @default(false)
-  type          String?   // 'seller' or 'buyer'
+  type          String    // 'seller' or 'buyer'
   company       String?
   verified      Boolean   @default(false)
   needsOnboarding Boolean @default(true)
